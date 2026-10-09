@@ -1,0 +1,61 @@
+# Adapted from open-webui/desktop at 0931b46d66e06bfb7d0b6a4aa065e6db338a1000.
+# SPDX-License-Identifier: AGPL-3.0-only
+appId: com.gyrogovernance.ai-inspector-studio
+productName: AI Inspector Studio
+directories:
+  output: dist
+  buildResources: build
+files:
+  - main.cjs
+  - runtime.cjs
+  - loading.html
+  - package.json
+extraResources:
+  - from: resources/studio
+    to: studio
+  - from: resources/runtime
+    to: runtime
+  - from: resources/licenses
+    to: licenses
+  - from: resources/source
+    to: source
+  - from: build/icon.png
+    to: icon.png
+asar: true
+npmRebuild: false
+publish: null
+win:
+  executableName: ai-inspector-studio
+  icon: build/icon.ico
+  target: nsis
+nsis:
+  artifactName: ${name}-${version}-${arch}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  deleteAppDataOnUninstall: false
+mac:
+  minimumSystemVersion: '14.0'
+  category: public.app-category.productivity
+  icon: build/icon.icns
+  target:
+    - dmg
+    - zip
+  artifactName: ${name}-${version}-${arch}.${ext}
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    NSCameraUsageDescription: Use the camera when attaching an image in Studio.
+    NSMicrophoneUsageDescription: Use the microphone for voice input in Studio.
+dmg:
+  artifactName: ${name}-${version}-${arch}.${ext}
+  title: ${productName}
+  contents:
+    - x: 225
+      y: 250
+      type: file
+    - x: 400
+      y: 250
+      type: link
+      path: /Applications

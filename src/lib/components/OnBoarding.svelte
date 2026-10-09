@@ -79,13 +79,12 @@
 					</div>
 
 					<h1 class="m-0 max-w-3xl text-2xl leading-[1.15] font-light tracking-tight lg:text-4xl">
-						{$i18n.t('Welcome to your AI home.')}
+						AI Inspector Studio
 					</h1>
 
 					<p class="mt-6 max-w-xl text-sm leading-relaxed font-light text-white/60 lg:text-base">
-						{$i18n.t(
-							'Run AI on your own terms. Connect any model, extend with code, and protect what matters without compromise. Your models, your data, your machine, wherever you open it.'
-						)}
+						A workspace for research, analysis, and document review. Bring your working documents and source
+						material together, then use AI to explore and develop your work.
 					</p>
 
 					<div class="mt-8 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-7">

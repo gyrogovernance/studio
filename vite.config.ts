@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
-const backendTarget = process.env.WEBUI_BACKEND_URL || 'http://localhost:8080';
+const backendTarget = process.env.WEBUI_BACKEND_URL || 'http://127.0.0.1:8081';
 
 export default defineConfig({
 	resolve: {

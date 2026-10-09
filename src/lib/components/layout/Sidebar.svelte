@@ -92,6 +92,7 @@
 	import CheckIcon from '../icons/Check.svelte';
 	import MoreHorizontalIcon from './Sidebar/icons/MoreHorizontal.svelte';
 	import MobileSwipePanel from '../common/MobileSwipePanel.svelte';
+	import UserCircle from '../icons/UserCircle.svelte';
 
 	const BREAKPOINT = 768;
 	const DEFAULT_PINNED_ITEMS = ['notes', 'workspace'];
@@ -1075,7 +1076,7 @@
 				<div>
 					<div class=" flex justify-center items-center">
 						{#if $user !== undefined && $user !== null}
-							<UserMenu role={$user?.role} profile={$config?.features?.enable_user_status ?? true}>
+							<UserMenu role={$user?.role} profile={false}>
 								<button
 									type="button"
 									class=" cursor-pointer flex size-8.5 items-center justify-center transition group"
@@ -1084,24 +1085,7 @@
 									<div
 										class="self-center relative flex size-[calc(30px*var(--app-text-scale,1))] items-center justify-center rounded-lg transition group-hover:bg-gray-100 dark:group-hover:bg-gray-900"
 									>
-										<img
-											src={`${WEBUI_API_BASE_URL}/users/${$user?.id}/profile/image`}
-											class="size-5.5 object-cover rounded-full"
-											alt={$i18n.t('Open User Profile Menu')}
-											aria-label={$i18n.t('Open User Profile Menu')}
-										/>
-
-										{#if $config?.features?.enable_user_status}
-											<div class="absolute -bottom-0.5 -right-0.5">
-												<span class="relative flex size-2.5">
-													<span
-														class="relative inline-flex size-2.5 rounded-full {true
-															? 'bg-green-500'
-															: 'bg-gray-300 dark:bg-gray-700'} border-2 border-white dark:border-gray-900"
-													></span>
-												</span>
-											</div>
-										{/if}
+										<UserCircle className="size-5.5" strokeWidth="1.5" />
 									</div>
 								</button>
 							</UserMenu>
@@ -1709,7 +1693,7 @@
 						{#if $user !== undefined && $user !== null}
 							<UserMenu
 								role={$user?.role}
-								profile={$config?.features?.enable_user_status ?? true}
+								profile={false}
 								className="w-[calc(var(--sidebar-width)-1rem)]"
 							>
 								<button
@@ -1718,26 +1702,9 @@
 									aria-label={$i18n.t('User menu')}
 								>
 									<div class=" self-center mr-3 relative flex-shrink-0">
-										<img
-											src={`${WEBUI_API_BASE_URL}/users/${$user?.id}/profile/image`}
-											class="size-5.5 object-cover rounded-full"
-											alt={$i18n.t('Open User Profile Menu')}
-											aria-label={$i18n.t('Open User Profile Menu')}
-										/>
-
-										{#if $config?.features?.enable_user_status}
-											<div class="absolute -bottom-0.5 -right-0.5">
-												<span class="relative flex size-2.5">
-													<span
-														class="relative inline-flex size-2.5 rounded-full {true
-															? 'bg-green-500'
-															: 'bg-gray-300 dark:bg-gray-700'} border-2 border-white dark:border-gray-900"
-													></span>
-												</span>
-											</div>
-										{/if}
+										<UserCircle className="size-5.5" strokeWidth="1.5" />
 									</div>
-									<div class=" self-center font-normal truncate">{$user?.name}</div>
+									<div class=" self-center font-normal truncate">{$i18n.t('Profile')}</div>
 								</button>
 							</UserMenu>
 						{/if}

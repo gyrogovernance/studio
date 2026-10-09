@@ -196,8 +196,13 @@
 
 		loaded = true;
 
-		if (($config?.features?.auth_trusted_header ?? false) || $config?.features?.auth === false) {
+		if ($config?.features?.auth_trusted_header ?? false) {
 			await signInHandler();
+		} else if ($config?.features?.auth === false) {
+			onboarding = $config?.onboarding ?? false;
+			if (!onboarding) {
+				await signInHandler();
+			}
 		} else {
 			onboarding = $config?.onboarding ?? false;
 		}
@@ -215,9 +220,13 @@
 
 <OnBoarding
 	bind:show={onboarding}
-	getStartedHandler={() => {
+	getStartedHandler={async () => {
 		onboarding = false;
-		mode = $config?.features.enable_ldap ? 'ldap' : 'signup';
+		if ($config?.features?.auth === false) {
+			await signInHandler();
+		} else {
+			mode = $config?.features.enable_ldap ? 'ldap' : 'signup';
+		}
 	}}
 />
 
@@ -285,9 +294,8 @@
 
 									{#if $config?.onboarding ?? false}
 										<div class="mt-1 text-xs font-normal text-gray-600 dark:text-gray-500">
-											ⓘ {$WEBUI_NAME}
-											{$i18n.t(
-												'does not make any external connections, and your data stays securely on your locally hosted server.'
+											ⓘ {$i18n.t(
+												'This first account will administer this installation.'
 											)}
 										</div>
 									{/if}

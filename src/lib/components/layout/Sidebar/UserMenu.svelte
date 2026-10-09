@@ -9,8 +9,6 @@
 
 	import { showSettings, mobile, showSidebar, user, config, settings } from '$lib/stores';
 
-	import { WEBUI_API_BASE_URL } from '$lib/constants';
-
 	import Dropdown from '$lib/components/common/Dropdown.svelte';
 	import DropdownMenu from '$lib/components/common/DropdownMenu.svelte';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
@@ -31,6 +29,7 @@
 	import UserIcon from './icons/User.svelte';
 	import WorkspaceIcon from './icons/Workspace.svelte';
 	import XMarkIcon from './icons/XMark.svelte';
+	import UserCircle from '$lib/components/icons/UserCircle.svelte';
 	import { updateUserStatus, updateUserSettings } from '$lib/apis/users';
 	import { toast } from 'svelte-sonner';
 
@@ -131,11 +130,7 @@
 						}}
 					>
 						<div class="self-center shrink-0 size-4.5 flex items-center justify-center">
-							<img
-								src={`${WEBUI_API_BASE_URL}/users/${$user.id}/profile/image`}
-								alt=""
-								class="size-4.5 rounded-full object-cover"
-							/>
+							<UserCircle className="size-4.5" strokeWidth="1.5" />
 						</div>
 						<div class="self-center min-w-0 flex-1 truncate">{$user.name}</div>
 

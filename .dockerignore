@@ -21,3 +21,5 @@ backend/data/*
 
 .venv
 .git
+dev
+desktop

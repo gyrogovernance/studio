@@ -8,20 +8,13 @@
 		showSidebar,
 		user,
 		mobile,
-		workspaceActions,
-		workspaceCounts
+		workspaceActions
 	} from '$lib/stores';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { getModelItems } from '$lib/apis/models';
-	import { searchKnowledgeBases } from '$lib/apis/knowledge';
-	import { getPromptItems } from '$lib/apis/prompts';
-	import { getSkillItems } from '$lib/apis/skills';
-	import { getToolList } from '$lib/apis/tools';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import Sidebar from '$lib/components/icons/Sidebar.svelte';
 	import SplitCreateButton from '$lib/components/common/SplitCreateButton.svelte';
-	import { formatNumber } from '$lib/utils';
 
 	const i18n = getContext<Writable<i18nType>>('i18n');
 
@@ -35,47 +28,8 @@
 		workspaceActions.set([]);
 	}
 
-	$: if (loaded && $page.url.pathname.startsWith('/workspace')) {
-		loadWorkspaceCounts();
-	}
-
 	$: activeWorkspaceSection = $page.url.pathname.split('/')[2] ?? '';
 	$: visibleActions = $workspaceActions.filter((action) => action.visible ?? true);
-
-	const getCount = (res: any) => res?.total ?? (Array.isArray(res) ? res.length : null);
-	const formatCount = (count: number | null) => formatNumber(count ?? 0);
-
-	const loadWorkspaceCounts = async () => {
-		const canViewModels = $user?.role === 'admin' || $user?.permissions?.workspace?.models;
-		const canViewKnowledge = $user?.role === 'admin' || $user?.permissions?.workspace?.knowledge;
-		const canViewPrompts = $user?.role === 'admin' || $user?.permissions?.workspace?.prompts;
-		const canViewSkills = $user?.role === 'admin' || $user?.permissions?.workspace?.skills;
-		const canViewTools =
-			$config?.features?.enable_plugins &&
-			($user?.role === 'admin' || $user?.permissions?.workspace?.tools);
-
-		const [modelRes, knowledgeRes, promptRes, skillRes, toolRes] = await Promise.all([
-			canViewModels
-				? getModelItems(localStorage.token, null, null, null, null, null, 1).catch(() => null)
-				: null,
-			canViewKnowledge
-				? searchKnowledgeBases(localStorage.token, null, null, 1, null).catch(() => null)
-				: null,
-			canViewPrompts
-				? getPromptItems(localStorage.token, null, null, null, null, null, 1).catch(() => null)
-				: null,
-			canViewSkills ? getSkillItems(localStorage.token, null, null, 1).catch(() => null) : null,
-			canViewTools ? getToolList(localStorage.token).catch(() => null) : null
-		]);
-
-		workspaceCounts.set({
-			models: getCount(modelRes),
-			knowledge: getCount(knowledgeRes),
-			prompts: getCount(promptRes),
-			skills: getCount(skillRes),
-			tools: getCount(toolRes)
-		});
-	};
 
 	onMount(async () => {
 		if ($user?.role !== 'admin') {
@@ -159,9 +113,6 @@
 								href="/workspace/models"
 							>
 								<span>{$i18n.t('Models')}</span>
-								<span class="text-sm opacity-60">
-									{formatCount($workspaceCounts.models)}
-								</span>
 							</a>
 						{/if}
 
@@ -176,9 +127,6 @@
 								href="/workspace/knowledge"
 							>
 								<span>{$i18n.t('Knowledge')}</span>
-								<span class="text-sm opacity-60">
-									{formatCount($workspaceCounts.knowledge)}
-								</span>
 							</a>
 						{/if}
 
@@ -193,9 +141,6 @@
 								href="/workspace/prompts"
 							>
 								<span>{$i18n.t('Prompts')}</span>
-								<span class="text-sm opacity-60">
-									{formatCount($workspaceCounts.prompts)}
-								</span>
 							</a>
 						{/if}
 
@@ -210,9 +155,6 @@
 								href="/workspace/skills"
 							>
 								<span>{$i18n.t('Skills')}</span>
-								<span class="text-sm opacity-60">
-									{formatCount($workspaceCounts.skills)}
-								</span>
 							</a>
 						{/if}
 
@@ -227,13 +169,15 @@
 								href="/workspace/tools"
 							>
 								<span>{$i18n.t('Tools')}</span>
-								<span class="text-sm opacity-60">
-									{formatCount($workspaceCounts.tools)}
-								</span>
 							</a>
 						{/if}
 					</div>
 
+					<a
+						href="/workspace/glossary"
+						aria-current={activeWorkspaceSection === 'glossary' ? 'page' : null}
+						class="shrink-0 px-2 text-sm {activeWorkspaceSection === 'glossary' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}"
+					>Glossary</a>
 					<div class="ml-auto flex shrink-0 items-center gap-1">
 						<SplitCreateButton actions={visibleActions} />
 					</div>

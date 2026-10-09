@@ -382,6 +382,10 @@ async def lifespan(app: FastAPI):
     if SAFE_MODE:
         await Functions.deactivate_all_functions()
 
+    from open_webui.studio.defaults import seed_workspace_defaults
+
+    await seed_workspace_defaults()
+
     # This should be blocking (sync) so functions are not deactivated on first /get_models calls
     # when the first user lands on the / route.
     log.info('Installing external dependencies of functions and tools...')
@@ -471,7 +475,16 @@ async def lifespan(app: FastAPI):
     app.state.startup_complete = True
     await publish_event(app, EVENTS.SYSTEM_STARTUP_COMPLETED, source='system')
 
+    from open_webui.studio.knowledge import schedule_framework_defaults
+
+    schedule_framework_defaults(app)
+
     yield
+
+    framework_task = getattr(app.state, 'studio_framework_task', None)
+    if framework_task and not framework_task.done():
+        framework_task.cancel()
+        await asyncio.gather(framework_task, return_exceptions=True)
 
     await publish_event(app, EVENTS.SYSTEM_SHUTDOWN_STARTED, source='system')
 
@@ -663,6 +676,10 @@ async def initialize_runtime_config(app: FastAPI):
             migrate_access_control(model.get('meta', {}))
         await Config.upsert({'evaluation.arena.models': arena_models})
 
+    # Studio excludes anonymous arena comparisons from the MVP. Clear any
+    # inherited upstream setting so a previous installation cannot re-expose it.
+    await Config.upsert({'evaluation.arena.enable': False, 'evaluation.arena.models': []})
+
     app.state.EMBEDDING_FUNCTION = None
     app.state.RERANKING_FUNCTION = None
     app.state.ef = None
@@ -844,6 +861,13 @@ app.include_router(ollama.router, prefix='/ollama', tags=['ollama'])
 app.include_router(openai.router, prefix='/openai', tags=['openai'])
 
 
+from open_webui.studio.knowledge import router as studio_knowledge_router
+
+app.include_router(studio_knowledge_router, prefix='/api/v1/studio', tags=['studio'])
+
+from open_webui.studio.glossary import router as studio_glossary_router
+
+app.include_router(studio_glossary_router, prefix='/api/v1/studio', tags=['studio'])
 app.include_router(pipelines.router, prefix='/api/v1/pipelines', tags=['pipelines'])
 app.include_router(tasks.router, prefix='/api/v1/tasks', tags=['tasks'])
 app.include_router(images.router, prefix='/api/v1/images', tags=['images'])
@@ -2248,7 +2272,7 @@ async def get_app_config(request: Request):
             user = await Users.get_user_by_id(data['id'])
 
     onboarding = False
-    if user is None:
+    if user is None and WEBUI_AUTH:
         onboarding = not await Users.has_users()
 
     license_metadata = getattr(app.state, 'LICENSE_METADATA', None)

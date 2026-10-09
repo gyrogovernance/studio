@@ -893,6 +893,12 @@ async def signup_handler(
         data={'role': user.role},
     )
 
+    from open_webui.studio.defaults import seed_workspace_defaults
+
+    await seed_workspace_defaults()
+    from open_webui.studio.knowledge import schedule_framework_defaults
+
+    schedule_framework_defaults(request.app)
     return user
 
 

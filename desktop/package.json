@@ -1,0 +1,24 @@
+{
+  "name": "ai-inspector-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Inspector Studio desktop workspace, built on Open WebUI",
+  "author": "Gyro Governance",
+  "license": "AGPL-3.0-only",
+  "homepage": "https://github.com/gyrogovernance/studio",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "build:unpack": "electron-builder --dir --publish never",
+    "build:win": "electron-builder --win --publish never",
+    "build:mac": "electron-builder --mac --publish never",
+    "check": "node --check main.cjs && node --check runtime.cjs",
+    "test": "node --test test/runtime.test.cjs",
+    "smoke": "electron test/smoke.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "sharp": "0.35.5"
+  }
+}

@@ -1271,7 +1271,7 @@
 			// visual, textual, symbolic identifiers, metadata, and surrounding UI.
 			// Do not alter, remove, obscure, or replace it except as LICENSE permits:
 			// https://docs.openwebui.com/license.
-			await WEBUI_NAME.set(backendConfig.name);
+			await WEBUI_NAME.set(backendConfig.name.replace(/\s*\(Open WebUI\)\s*$/, ''));
 
 			if ($config) {
 				await setupSocket($config.features?.enable_websocket ?? true);

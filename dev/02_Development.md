@@ -1,161 +1,137 @@
 # Development
 
-Repository: [gyrogovernance/studio](https://github.com/gyrogovernance/studio). Local path: `F:\Development\studio`. Documents in `dev/`, prompt drafts in `prompts/`, upstream checkouts in `external/` (gitignored).
+## Architecture
 
-Installed Open WebUI release, install path, and enabled modules are recorded here on first setup:
+AI Inspector Studio uses the Open WebUI v0.11.4 source in the repository root. The frontend is SvelteKit, Svelte 5, and Vite. The backend is FastAPI. Native Open WebUI chats, Notes, Knowledge, search, references, and exports provide the MVP's storage and working interface.
 
-- Release: (to be recorded)
-- Install path: (to be recorded)
-- Enabled modules: (to be recorded)
-
-Documentation read for this plan: Open WebUI feature docs under `external/open-webui-docs/docs/features/` (Notes, Models, Knowledge, Prompts, Skills, Functions, Channels, Administration), dated against the shallow checkout of 2026-10-09.
-
-## Upstream checkouts
-
-| Path | Contents |
+| Path | Purpose |
 | --- | --- |
-| `external/open-webui` | Platform source |
-| `external/open-webui-docs` | Documentation source for [docs.openwebui.com](https://docs.openwebui.com) |
-| `external/open-webui-desktop` | Desktop app (Electron, AGPL-3.0) |
-| `external/open-webui-oikb` | Knowledge Base sync from 46 connectors (MIT; requires Open WebUI 0.9.6+) |
-| `external/open-webui-mcpo` | MCP-to-OpenAPI proxy (MIT) |
+| `src/` | Frontend components, routes, and native workspace interface |
+| `backend/open_webui/` | Backend application and native services |
+| `backend/open_webui/studio/` | Studio default installers, gadget execution, framework import, and glossary endpoint |
+| `backend/open_webui/studio/data/` | Versioned workspace, gadget, and framework packs, source files, and notices |
+| `scripts/start.ps1` | Combined Windows development and local production launchers |
+| `scripts/dev-backend.ps1` | Backend development command |
+| `desktop/` | Electron launcher and Windows/macOS installer configuration |
+| `scripts/desktop.mjs` | Desktop frontend build, payload preparation, and platform packaging |
+| `scripts/prepare-desktop.py` | Studio backend wheel, locked dependency export, notices, and source bundle |
+| `scripts/port-inspector-gadgets.py` | Source prompt extraction and gadget adapter generation |
+| `prompts/` | Earlier prompt drafts; separate from the installed gadget pack |
+| `static/` | Frontend assets |
+| `dev/` | Product, development, data, and internal notes |
 
-## How Studio sits on Open WebUI
+Local upstream reference checkouts are kept under the ignored `dev/external/` directory. They are not runtime dependencies. Private `dev/` files are excluded from desktop payloads, source bundles, and Docker build contexts.
 
-Open WebUI is already a research workspace: Chat, Notes, Knowledge, Models, Prompts, Skills, Tools, plus Functions (Actions, Filters, Pipes), Channels, Automations, and evaluation. Studio's job is to configure that surface for governance work and to add what the platform does not provide: structured review output, human adjudication of findings, and an exportable session record with consent fields.
+## Desktop packaging
 
-### Recommended object map
+`desktop/README.md` describes Windows and macOS build commands and installation behavior.
+The Electron installer configuration is adapted from `open-webui/desktop` v0.0.20;
+the launcher opens Studio directly and manages a loopback backend process. First
+launch installs managed Python 3.12 and hashed dependencies with a pinned,
+checksum-verified uv executable. The bundled wheel contains this repository's
+Studio backend, frontend, and workspace defaults.
 
-| Studio need | Open WebUI object | Why this fit |
-| --- | --- | --- |
-| Living deliverable (policy draft, brief, procedure) | **Notes** | Persistent document outside a single chat; full content injected when attached; chat sidebar with rewrite in place (`view_note` / `replace_note_content`); export to `.md` / `.pdf`; undo/redo. Prefer Notes over chat history as the primary artifact. |
-| Source corpora (large sets) | **Knowledge** (Focused Retrieval) | RAG over collections that would overflow context. Attach with `#` or bind to a model. |
-| Short framework references (Human Mark Grammar, core, Terms) | **Knowledge** (Full Context) or Notes | Short docs that must appear word-for-word. Full Context on a Knowledge item, or a pinned Note attached to the review chat. |
-| Sync from GitHub / Confluence / drives | **oikb** | Incremental sync into a Knowledge Base; keep THM docs and public policy packs current. |
-| Research persona (policy analyst) | **Model preset** | Base model + system prompt + bound Knowledge + Skills. One selectable agent in the model picker. |
-| Review persona (Human Mark reviewer) | **Model preset** | Separate preset with review system prompt and Human Mark Knowledge bound. |
-| One-shot tasks (claim map, synthesis, single pass) | **Prompts** (`/` commands) | Slash commands with typed input variables (domain, activity, material type) and version history. |
-| Multi-step review procedure | **Skills** (`$` mention or model-bound) | Markdown instruction set; lazy-loaded via `view_skill` under native function calling. Three-pass Human Mark workflow lives here. |
-| Button on a message: run review / open findings | **Action Function** | Admin-managed toolbar button under a message; receives message and chat context; can emit events and update message content. Entry point for "Review with Human Mark". |
-| Validate or reshape model JSON on the way out | **Filter Function** (outlet) | Parse assessment JSON, record parse failures, optionally retry. Admin-only Python on the server. |
-| Orchestrate three passes as one selectable "model" | **Pipe Function** (optional) | Custom pathway that runs Detection → Processing → Treatment and returns the combined record. Use when slash prompts plus a Skill feel too loose. |
-| Team deliberation | **Channels** (later) | Shared timeline with `@model` tags; access control by group. |
-| Usage and cost | **Admin analytics** | Message volume, tokens, cost. |
-| Thumbs / arena | **Admin evaluation** | Keep separate from Human Mark adjudication. Ratings and Elo leaderboards are optional product features, not the Studio review model. |
+Backend dependencies are exported from `uv.lock`. Updates are delivered through
+Studio installers; upstream PyPI auto-updates are not used. Application data lives
+outside the installer and survives application upgrades. Code signing and macOS
+notarization require platform credentials before public distribution. The manual
+desktop workflow builds installers and uploads artifacts without publishing a release.
 
-### Notes versus Knowledge
+## Local setup
 
-Notes inject full text and suit the draft the operator is writing. Knowledge retrieves passages and suits large source libraries. Governance sessions typically need both: a Note for the working product, a Knowledge Base for background material, and Full Context (or a Note) for the Human Mark reference documents.
+Use Node.js 22, Python 3.12, and `uv`. The declared package ranges are Node.js 18.13 through 22.x and Python 3.11 through 3.12. Node.js 22 and Python 3.12 are the documented setup.
 
-### Native function calling
+From PowerShell in the repository root:
 
-Model-attached Knowledge and Skills work cleanly when native function calling and builtin tools are enabled. Note-attached chats force note tools even when a model is otherwise locked down. Record this requirement in the install notes for the review presets.
-
-## Port from AI Inspector
-
-Source: `gyrogovernance/apps` (MIT).
-
-| Component | Path | Destination in Studio |
-| --- | --- | --- |
-| Three-pass review prompts | `src/lib/prompts.ts` (`generateMetaEvaluationPass1/2/3`) | Skill content + optional Pipe |
-| Document loader pattern | `src/lib/thm-docs-loader.ts` | Knowledge Base (Full Context) or pinned Notes |
-| Task prompts | `POLICY_AUDIT_TASK`, `POLICY_REPORT_TASK`, and related | Workspace Prompts with `/` commands |
-| Domain types | `ChallengeType` in `src/types/index.ts` | Prompt input variables and Model tags |
-| Session / insight types, contribution block | `Session`, `GovernanceInsight` | Session export schema ([03_Data](03_Data.md)) |
-| Import / export | `src/lib/export.ts`, `src/lib/import.ts` | Export Tool or Action; JSON / ZIP |
-
-Keep in the extension for now: clipboard transcript parsing (the extension still serves chats hosted elsewhere); GyroDiagnostics suite (later module once the session model is stable).
-
-## Output format
-
-Review passes return JSON (`schema_version: studio-thm-assessment-0.1`; see `prompts/thm-reviewer-v0.1.txt`): category statuses, findings with quotes and locators, coverage, task-quality notes.
-
-Work still required: convert pass 1 and pass 2 drafts to the same schema; validate responses (Filter or Tool); retry once on parse failure; render findings in the UI; generate prose reports from stored JSON at export time.
-
-## Audience pack: European AI governance (v0)
-
-Preload public materials and reusable workflows so a Brussels-style policy team can open Studio and work without assembling a library from scratch. The first pack is tuned to organisations like [Arq Foundation](https://arq.foundation/): philanthropically funded, AI-native, full-stack researchers who own a topic from analysis to stakeholder engagement, plus a Builder-in-Residence brief for internal tooling and knowledge management ([About](https://arq.foundation/about); [Preparing Europe for Transformative AI](https://arq.foundation/research/preparing-europe-for-transformative-ai)).
-
-Arq's published agenda maps to five Knowledge collections and matching Skills:
-
-| Arq focus | Knowledge collection (public sources) | Skill / Prompt set |
-| --- | --- | --- |
-| AI Infrastructure | Cloud and AI Development Act materials; AI Gigafactories / compute policy briefings; ASML and upstream supply-chain public reports | `/infra-brief`, skill: compute leverage memo |
-| Middle-Power Coordination | Middle-power and alliance public briefings; OECD / G7 AI statements | `/coalition-memo`, skill: multi-capital talking points |
-| AI Resilience R&D | Interpretability and defensive-tech public papers; AISI-style evaluation summaries where published | `/resilience-scan`, skill: differential-tech shortlist |
-| Breakthrough Innovations / metascience | Heitor report; EU R&I programme docs; UK Metascience Unit materials; ARPA / FRO design notes in the public domain | `/metascience-note`, skill: funding-process experiment design |
-| Statecraft | Beta.gouv and AISI public case notes; state-capacity reform literature that is free to redistribute | `/statecraft-brief`, skill: institutional design one-pager |
-
-### Knowledge Bases to create first
-
-Prefer official and clearly redistributable sources. Sync with [oikb](https://github.com/open-webui/oikb) where a stable URL or Git mirror exists; otherwise upload once and record the source URL and retrieval date in the Knowledge description.
-
-| Knowledge Base | Mode | Sources (examples) |
-| --- | --- | --- |
-| `eu-ai-act` | Focused Retrieval (large) | Consolidated AI Act: [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng) (current consolidated text on EUR-Lex). Commission AI Act pages on [Shaping Europe's digital future](https://digital-strategy.ec.europa.eu/). |
-| `gpai-code` | Full Context or Focused | [GPAI Code of Practice](https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai) chapters (Transparency, Copyright, Safety and Security) and Commission guidelines on GPAI concepts. |
-| `eu-competitiveness-stack` | Focused Retrieval | Public Draghi, Letta, and Heitor report PDFs (Commission / Council publications). |
-| `thm-reference` | Full Context | Human Mark Grammar, core, and Terms from `gyrogovernance/tools` (CC BY-SA 4.0; attribution required). |
-| `arq-public` | Full Context | Arq essays that are free to mirror or link: flagship essay and consultation responses such as the Cloud and AI Development Act fixes. Prefer link + citation when mirroring is unclear. |
-
-Add later packs (US NIST AI RMF, Council of Europe AI Convention, OECD AI Principles) as separate Knowledge Bases so European operators can toggle them without mixing jurisdictions.
-
-### Skills and Prompts to ship with the pack
-
-| Name | Type | Job |
-| --- | --- | --- |
-| `/claims-map` | Prompt | Claim and evidence extraction with locators (from AI Inspector Policy Auditing). |
-| `/exec-synth` | Prompt | Attributed executive synthesis (from AI Inspector Policy Reporting). |
-| `/thm-pass1` … `/thm-pass3` | Prompts | Human Mark detection, flow mapping, treatment (JSON). |
-| `$thm-review` | Skill | Three-pass procedure with coverage and adjudication checklist. |
-| `/consultation-response` | Prompt | Structured response to an EU public consultation (position, evidence, amendments, risks). |
-| `/stakeholder-memo` | Prompt | One-page memo for a named institution (Commission DG, Member State, middle-power capital). |
-| `/metascience-experiment` | Prompt | Design a funding-process experiment (peer review, randomisation, metrics) in Heitor / UK Metascience style. |
-| `$policy-hygiene` | Skill | Source attribution, assumption surfacing, and Direct/Indirect authority checks before external send. |
-
-### Model presets in the pack
-
-| Preset | Bound Knowledge | Bound Skills / Prompts |
-| --- | --- | --- |
-| Policy Analyst (EU) | `eu-ai-act`, `eu-competitiveness-stack`, optional `gpai-code` | `/claims-map`, `/exec-synth`, `/consultation-response`, `$policy-hygiene` |
-| Metascience Researcher | Heitor / R&I docs; UK Metascience materials | `/metascience-experiment`, `/claims-map` |
-| Human Mark Reviewer | `thm-reference` | `$thm-review`, `/thm-pass1`–`3` |
-| Forward-Deployed Brief | Light EU stack + current Note | `/stakeholder-memo`, `/exec-synth` |
-
-### Note templates
-
-Seed Notes (or `/notes/new` query params) for recurring deliverables: consultation response, stakeholder memo, metascience experiment design, infrastructure brief. Operators duplicate a template Note, attach the relevant Knowledge, and open the note's chat sidebar.
-
-This pack is the concrete answer to Arq's Builder-in-Residence need: internal tooling, knowledge management, and AI-native workflows pre-wired for their five policy areas, with Human Mark review available on the same surface.
-
-## Implementation stages
-
-**Stage 1. Configure the workspace and load the EU pack.** Record the Open WebUI release. Create the Knowledge Bases above (start with `eu-ai-act`, `thm-reference`, and one competitiveness PDF). Create the Prompt slash commands and the `$thm-review` Skill. Create the Policy Analyst and Human Mark Reviewer Model presets. Run one public document (for example an Arq essay or a short AI Act article set) through a Note + chat + review + manual adjudication. Export by hand. Confirm destinations: instance database, inference provider, export file.
-
-**Stage 2. Interactive review.** Add an Action Function button on assistant messages to run the review Skill or Pipe and attach structured findings. Add an outlet Filter to validate JSON. Persist machine finding and human decision as linked records (artifact storage or Notes + export schema).
-
-**Stage 3. Session record and consent.** Implement the session schema from [03_Data](03_Data.md), including contribution choices and preview-before-share. Prefer built-in objects; add a small Tool or service only where Notes, Knowledge, and artifact storage omit required fields.
-
-**Stage 4. Pilot readiness.** Spending cap, model list restriction, consent notice, oikb sync for public source packs if useful. Invite five participants per the pilot plan in [03_Data](03_Data.md).
-
-## Verification
-
-- Feature list checked against the installed release (Notes chat sidebar, Skills, Actions, Full Context Knowledge)
-- Configuration backed up before edits
-- Provider connected; model list restricted; spending cap set
-- Native function calling enabled for review presets
-- One full session exported and re-imported with fields intact
-- Open WebUI branding visible; per-component license file present
-- Port list credited in the repository README
-
-## Layout
-
+```powershell
+if (-not (Test-Path -LiteralPath .env)) {
+    Copy-Item .env.example .env
+}
+npm ci
+uv sync --python 3.12 --no-dev --no-install-project
 ```
-studio/
-  dev/
-  prompts/
-  external/      # gitignored
-  skills/        # planned: Markdown skills for import
-  tools/         # planned: Tools / Functions source
-  tests/         # planned: schema and export tests
+
+`--no-install-project` prepares the backend dependencies without invoking the upstream package build hook.
+
+Keep `.env` local. For the supplied launchers, which start Python from `backend/`, these relative paths place runtime data under the ignored repository-root `.data/` directory:
+
+```dotenv
+WEBUI_NAME='AI Inspector Studio'
+SHOW_OPEN_WEBUI_BRANDING=true
+DATA_DIR='../.data'
+STATIC_DIR='../.data/static'
+CORS_ALLOW_ORIGIN='http://127.0.0.1:5173;http://127.0.0.1:8081'
+DEFAULT_INTERFACE_SETTINGS='{"showChangelog":false}'
 ```
+
+Retain an existing instance's data path when changing configuration. Open WebUI repopulates its configured static directory at startup; use a runtime directory rather than a tracked asset directory.
+
+The launcher uses `.venv/Scripts/python.exe`. If `.runtime/` contains a project-local Node/npm installation, it uses that installation; otherwise it uses npm from PATH.
+
+## Run commands
+
+| Command | Behavior | Default URL |
+| --- | --- | --- |
+| `npm run start:dev` | Starts Vite and a hidden backend process with Python reload | `http://127.0.0.1:5173` |
+| `npm run start:prod` | Builds the frontend and serves it through FastAPI | `http://127.0.0.1:8081` |
+| `npm run dev` | Starts only the Vite frontend | `http://127.0.0.1:5173` |
+| `npm run dev:backend` | Starts only the backend with reload | `http://127.0.0.1:8081` |
+
+For production frontend builds with additional Node heap capacity:
+
+```powershell
+$env:NODE_OPTIONS = '--max-old-space-size=8192'
+npm run start:prod
+```
+
+Both combined launchers bind to `127.0.0.1` and set `WEBUI_AUTH=False`. Open WebUI maintains an internal profile for its profile-scoped data. A shared deployment needs a separate authenticated server configuration, including its signing secret and access settings.
+
+Vite proxies API, provider, OAuth, and WebSocket traffic to `http://127.0.0.1:8081`. `WEBUI_BACKEND_URL` overrides the frontend proxy target. The backend exposes its API documentation at `/docs`.
+
+## Model connections
+
+Configure provider connections under Admin Settings → Connections. OpenAI-compatible providers use their base URL and credentials; Ollama uses the address of its running local service. Inference credentials and model weights are not bundled.
+
+The four starter model presets initially have no base model and remain disabled. Assign an inference model in the preset editor to enable a preset. Prompts and skills can also be used independently.
+
+Enable a gadget in the chat tool selector or attach it to a model preset. The selected model must support tool use. Each gadget has an optional `MODEL` valve; an empty value uses the current chat model.
+
+## Workspace packs
+
+`studio/defaults.py` installs four model presets, nine prompts, and four skills from `workspace-v1.json`. It also invokes the native gadget installer. Startup and first-profile creation provide installation entry points. Set `STUDIO_WORKSPACE_DEFAULTS=false` to disable automatic pack installation.
+
+`studio/gadgets.py` installs five native Tools and runs their source-derived instructions through Open WebUI's completion dispatcher. Policy Auditing, Policy Reporting, Text Sanitization, and Quality Improvement each run one task. Meta-Evaluation runs three sequential tasks with the corresponding Human Mark references and previous pass outputs.
+
+`studio/knowledge.py` imports five collections containing eight source documents through the native file upload, extraction, embedding, and Knowledge linking path. Indexing runs in the background. The configured embedding model must be available; the default local embedding model may download on first setup. The importer attaches relevant libraries once to untouched policy and Human Mark presets.
+
+| Pack state | Configuration key |
+| --- | --- |
+| Workspace entries | `studio.workspace_pack.v1` |
+| Gadget entries | `studio.gadgets.v1` |
+| Framework collections and files | `studio.framework_pack.v1` |
+| Initial preset-library links | `studio.framework_pack.v1.preset_links` |
+
+Installers preserve subsequent edits and intentional deletions. Framework installation records progress per file and can resume interrupted work. New bundled content needs explicit versioning and migration rules.
+
+Administrator endpoints:
+
+- `GET /api/v1/studio/frameworks/status`: importer state and recorded progress.
+- `POST /api/v1/studio/frameworks/install`: schedule a resumable import.
+
+The authenticated endpoint `GET /api/v1/studio/glossary` supplies workspace definitions and attributed Human Mark reference sections to `/workspace/glossary`.
+
+See [Data and provenance](03_Data.md) for the tool result format, source mapping, and reference metadata.
+
+## Extension maintenance
+
+Use native Prompts for reusable instructions, Skills for task guidance, Tools for callable operations, and model presets to combine them with inference and Knowledge. Action and Pipe Functions remain available when an integration specifically requires a message operation or a model-like endpoint. The existing gadget pack runs inside the backend and does not require a separate orchestration service.
+
+GyroDiagnostics and Rapid Test are excluded. A separate Evaluations feature is deferred. Arena model comparison is disabled; startup clears inherited Arena configuration.
+
+## Checks and upstream updates
+
+For code changes, run the checks relevant to the affected component. The repository provides `npm run check` for Svelte/TypeScript diagnostics and `npm run build` for frontend compilation. Record results and unresolved diagnostics in [Notes](04_Notes.md). A successful build and a successful type check are separate outcomes.
+
+The imported upstream baseline is v0.11.4, commit `8bd8b4fac5e059578ac0c74b3c18d11139f88b7d`. Git retains the shared upstream history, with the `upstream` remote pointing to `open-webui/open-webui`.
+
+For an update, fetch upstream, review the selected release and migrations, then merge it into a working branch. Review `LICENSE`, `LICENSE_HISTORY`, and `LICENSE_NOTICE` at the target commit. Resolve changes in Studio-modified routes, startup hooks, assets, and native model interfaces, then exercise the affected workflows. Keep source and license notices with every port and reference document.

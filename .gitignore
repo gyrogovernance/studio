@@ -313,4 +313,21 @@ cypress/screenshots
 .cptr
 
 # Read-only local references
-/external/
+dev/external/
+/.data/
+/.runtime/
+
+dev/
+
+# Unrelated local website working draft
+/lab.md
+
+# Generated desktop payloads and installers
+/desktop/node_modules/
+/desktop/dist/
+/desktop/resources/
+!/desktop/build/
+!/desktop/build/entitlements.mac.plist
+/desktop/build/icon.png
+/desktop/build/icon.ico
+/desktop/build/icon.icns
