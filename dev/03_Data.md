@@ -2,100 +2,110 @@
 
 ## Unit of record
 
-The unit of contribution is a reviewed governance-work session: the material, the task and domain, the three assessment passes with their exact prompt and model versions, and the human review with per-finding decisions. A record qualifies for packaging when material snapshot, pass outputs, and human review are all present.
+Reviewed governance session: material snapshot, task and domain, review-pass outputs (prompt and model versions), human adjudication per finding. Packaging requires all four present.
 
 ## Schemas
 
-### THM assessment JSON
+### Review-pass JSON
 
-Every pass returns one JSON object. The full field list lives in `prompts/thm-reviewer-v0.1.txt` (`schema_version: studio-thm-assessment-0.1`). The record carries:
-
-| Field | Content |
-| --- | --- |
-| `schema_version` | Schema identity for the Studio assessment family |
-| `target_message_id` | The message or document section under assessment |
-| `coverage` | IDs actually inspected, source IDs, stated limitations |
-| `categories` | Status per category: `finding`, `no_finding_in_scope`, or `insufficient_context`, with reason |
-| `findings[]` | ID, category, status (`potential` or `explicit`), evidence quotes with locators, crossing description, explanation, suggested revision |
-| `task_quality_notes` | Problems outside the THM boundary, each with its own evidence |
-| `summary` | Short account of findings and coverage |
-
-`no_finding_in_scope` records a result within the stated coverage. Coverage travels with every assessment.
-
-### Human review record
-
-The machine finding and the reviewer judgment are stored as separate rows that reference each other:
+Reference: `prompts/thm-reviewer-v0.1.txt` (`schema_version: studio-thm-assessment-0.1`).
 
 | Field | Content |
 | --- | --- |
-| Finding ID | The machine proposal under review |
-| Decision | `accept`, `amend`, `reject`, `defer`, or `add` |
-| Rationale | Short reason, required for amendments, rejections, and additions |
-| Category change | Original and revised category with both rationales, kept together |
-| Reviewer | Pseudonymous reviewer ID |
+| `schema_version` | Schema identity |
+| `target_message_id` | Message or section under review |
+| `coverage` | Inspected IDs, source IDs, limitations |
+| `categories` | Per category: `finding`, `no_finding_in_scope`, or `insufficient_context`, with reason |
+| `findings[]` | ID, category, status (`potential` \| `explicit`), evidence (quote, locator), crossing, explanation, suggested revision |
+| `task_quality_notes` | Issues outside Human Mark scope, each with evidence |
+| `summary` | Findings and coverage |
+
+Coverage is mandatory on every assessment.
+
+### Human review row
+
+Machine finding and reviewer decision are separate linked rows.
+
+| Field | Content |
+| --- | --- |
+| Finding ID | Machine proposal |
+| Decision | `accept` \| `amend` \| `reject` \| `defer` \| `add` |
+| Rationale | Required for amend, reject, add |
+| Category change | Original and revised category with both rationales |
+| Reviewer | Pseudonymous ID |
 | Timestamp | Review time |
-| Completeness | Review coverage for the whole assessment, recorded per pass |
+| Completeness | Coverage of the assessment, per pass |
 
-Disagreement between reviewers persists as independent records until an adjudication record joins them.
+Independent reviewer rows persist until an adjudication record joins them.
 
 ### Session record
 
-The session record extends the `GovernanceInsight` type from `gyrogovernance/apps` (`src/types/index.ts`), which already carries `schema_version`, model provenance, and the contribution block:
+Extends `GovernanceInsight` from `gyrogovernance/apps` (`src/types/index.ts`): `schema_version`, model provenance, contribution block.
 
 | Section | Content |
 | --- | --- |
-| Project and task | Domain, activity, objective, source list, task template ID and version |
-| Material snapshot | Document version or message IDs, content hash, context omissions |
-| Pass runs | Pass name, prompt version, model configuration, output, timestamps, usage data |
-| Assessment and review | Findings with coverage, human decisions, completeness |
-| Process | Models used, durations, created timestamp, schema version |
+| Project and task | Domain, activity, objective, sources, template ID and version |
+| Material snapshot | Document version or message IDs, content hash, omissions |
+| Pass runs | Pass name, prompt version, model config, output, timestamps, usage |
+| Assessment and review | Findings, coverage, decisions, completeness |
+| Process | Models, durations, created_at, schema_version |
 | Contribution | Public flag, license (CC0 default), contributor |
 
-## Where data lives
+## Storage locations
 
 | Store | Contents |
 | --- | --- |
-| Open WebUI database (SQLite or PostgreSQL) | Chats, notes, task and preset configuration, session records |
-| Instance file storage | Attached material, exports |
-| Artifact storage API | Record key-value data with personal and shared scopes |
-| Inference provider | Prompts, attached material, and context sent for each call |
+| Open WebUI DB (SQLite or PostgreSQL) | Chats, notes, presets, session records |
+| Instance file storage | Attachments, exports |
+| Artifact storage API | Key-value records, personal and shared scopes |
+| Inference provider | Prompts, attachments, and context for each call |
 
-The interface names the three destinations for every session: the instance holding the record, the inference provider receiving the call, and the export or share channel the user opens. Provider identity comes from configuration and stays visible in the record.
+Session UI lists three destinations: instance, inference provider, export or share channel. Provider identity is taken from configuration and written into the record.
 
-## Contribution and consent
+## Consent
 
-Every completed review offers three choices: keep the record private, share it with a named project, or release it publicly under stated terms with CC0 as the default. Dataset sale runs on separate permission and compensation arranged with the contributor. Consent decisions are explicit records with timestamps, and free or discounted token access alone records nothing.
+| Choice | Effect |
+| --- | --- |
+| Private | Record stays on the instance |
+| Named project | Shared with a stated project under stated terms |
+| Public release | Published under stated terms; CC0 default |
+| Dataset sale | Separate permission and compensation |
 
-Before sharing, the user previews the exact content: material, findings, review rationales, and provenance fields, with source documents, third-party quotes, and identifying details removable in the preview. Redaction that changes the evidence behind a finding sends that finding back for re-review, and the record notes the limitation.
+Consent is an explicit timestamped record. Token subsidy alone creates no contribution.
 
-Retention covers working chats, snapshots, review records, logs, and backups, with the schedule fixed before the pilot. Withdrawal removes a record from the Studio and from future releases; copies already downloaded remain with their holders, and the withdrawal process states that boundary.
+Preview before share shows exact material, findings, rationales, and provenance. Operators may remove sources, third-party quotes, and identifiers in the preview. Evidence change after redaction triggers re-review of affected findings; the limitation is recorded.
+
+Retention schedule (chats, snapshots, reviews, logs, backups) is fixed before pilot. Withdrawal removes the record from the Studio and from future releases; already-downloaded copies remain with holders.
 
 ## Quality rules
 
-1. A finding carries category, exact quote with locator, the Direct and Indirect crossing, and the contextual reason for the classification.
-2. Machine proposal and human decision persist as separate versions, and both survive export.
-3. Coverage and completeness fields travel with the record, so a reader can see what was inspected and what was reviewed.
-4. Task-quality issues outside the THM boundary stay in their own field with evidence.
-5. The pilot includes a blinded subset: reviewers record judgments on some assessments before machine findings appear, and cases with zero machine findings stay in the sample. Recall against those cases is measured against an independent reference assessment.
+1. Finding fields: category, exact quote with locator, Direct/Indirect crossing, contextual reason.
+2. Machine proposal and human decision stored as separate versions; both included in export.
+3. Coverage and completeness travel with the record.
+4. Non-THM task-quality issues use their own field with evidence.
+5. Pilot includes a blinded subset (judgments recorded before machine findings are shown) and cases with zero machine findings. Recall is measured against an independent reference assessment.
 
 ## Pilot
 
-Five invited participants complete two sessions each on public-source material, one policy document and one organizational or community governance document. Each session produces a usable deliverable, with the assessment offered at a natural stopping point.
+Five invited participants; two sessions each; public-source material (one policy document, one organizational or community governance document). Each session produces a usable deliverable; review is offered at a natural stopping point.
 
-| Measure | Calculation |
+| Measure | Formula |
 | --- | --- |
-| Review uptake | Sessions with a requested review / eligible sessions |
+| Review uptake | Requested reviews / eligible sessions |
 | Review completion | Fully reviewed assessments / requested assessments |
-| Decision split | Accepted, amended, rejected, deferred, and added findings by task and category |
-| Domain breadth | Material types completed with a reviewable assessment |
-| Review burden | Time spent reviewing, plus abandoned-review reasons |
+| Decision split | Accept / amend / reject / defer / add, by task and category |
+| Domain breadth | Material types with reviewable assessments |
+| Review burden | Review time; abandoned-review reasons |
 | Cost per completed review | Attributable inference cost / completed reviews |
-| Contribution uptake | Approved contributions / completed reviews offered contribution |
+| Contribution uptake | Approved contributions / reviews offered contribution |
 
-The write-up reports denominators, uncertainty, and the small sample size alongside the measures.
+Write-up reports denominators, uncertainty, and sample size.
 
-## Cost control
+## Cost
 
-Inference cost per run: `cost = sum(input_tokens * input_price_per_million / 1,000,000 + output_tokens * output_price_per_million / 1,000,000)`, with unknown usage recorded separately from zero.
+```
+cost = sum(input_tokens * input_price_per_million / 1e6
+         + output_tokens * output_price_per_million / 1e6)
+```
 
-A spending cap and a review allowance are set before invitations go out. At the cap the Studio queues requests and shows the budget state in the interface. OpenRouter free endpoints carry rate limits and availability that change over time ([limits](https://openrouter.ai/docs/api_reference/limits)), which suits workflow testing; the pilot budget comes from measured usage on those endpoints at their actual account limits.
+Unknown usage is recorded separately from zero. Spending cap and review allowance are set before invitations. At the cap, requests queue and the UI shows budget state. OpenRouter free endpoints: rate limits and changing availability ([limits](https://openrouter.ai/docs/api_reference/limits)). Pilot budget uses measured usage at actual account limits.

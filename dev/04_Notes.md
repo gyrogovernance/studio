@@ -1,53 +1,59 @@
 # Notes
 
-Plan, log, open issues, and ideas for `gyrogovernance/studio`. Companion documents: [01_Product](01_Product.md), [02_Development](02_Development.md), [03_Data](03_Data.md).
+Internal plan, log, issues, and ideas. Public product facts: [01_Product](01_Product.md). Code: [02_Development](02_Development.md). Data: [03_Data](03_Data.md).
 
 ## Plan
 
-| Milestone | Outcome |
+| ID | Outcome |
 | --- | --- |
-| M1 | First complete session on the installed Open WebUI: chat, three-pass assessment, human review, export |
-| M2 | JSON output pipeline for all three passes with schema validation and one recorded retry |
-| M3 | Review surface: accept, amend, reject, defer, add, with persistence beside each finding |
-| M4 | `gyrogovernance/studio` published: MIT license, ported components credited, prompts versioned |
-| M5 | Pilot: five invited participants, two sessions each, public-source material |
-| M6 | Grant application covering the pilot token budget |
-| M7 | Dataset v0 assembled from contributed records, with consent fields complete |
+| M1 | End-to-end session: chat, three review passes, adjudication, export |
+| M2 | JSON pipeline for all passes; schema validation; one recorded retry |
+| M3 | Adjudication UI with persistence per finding |
+| M4 | Repository published (MIT, ports credited, prompts versioned) |
+| M5 | Pilot: five participants, two sessions each, public sources |
+| M6 | Grant application for pilot token budget |
+| M7 | Dataset v0 from contributed records with complete consent fields |
 
 ## Log
 
-- 2026-10-09: Direction fixed. Chat workspace with The Human Mark assessment as automated first pass and human review on top. Arena and blind-ranking mechanics sit outside the design; model choice follows the user's task.
-- 2026-10-09: Repositories inspected locally: `gyrogovernance/apps` (AI Inspector, MIT) and `gyrogovernance/tools` (THM documents, CC BY-SA 4.0). Three-pass prompts, THM document loader, session and insight types, and the existing contribution block identified for porting.
-- 2026-10-09: Open WebUI structure confirmed from upstream README and documentation: Chat, Search, Notes, Workspace with Models, Knowledge, Prompts, Skills, Tools, plus artifact storage, channels, and automations in current releases.
-- 2026-10-09: Documentation set rewritten as these four documents; the first draft set was replaced.
-- 2026-10-09: THM framing decision: the framework keeps its AI Safety & Alignment identity, header, and verification label as published.
-- 2026-10-09: Repository `gyrogovernance/studio` created at `F:\Development\studio`. Documents moved here from `basil/OSS/notes` into `dev/`, prompt drafts into `prompts/`, and shallow checkouts of the five Open WebUI repositories cloned into `external/` for documentation reading and porting. Product brief rewritten to lead with the workspace and introduce The Human Mark at first use.
+| Date | Entry |
+| --- | --- |
+| 2026-10-09 | Product direction: chat workspace; structured review tasks; human adjudication; exportable session record. Model choice by task. |
+| 2026-10-09 | Inspected `gyrogovernance/apps` (MIT) and `gyrogovernance/tools` (CC BY-SA 4.0). Port candidates identified. |
+| 2026-10-09 | Open WebUI sections confirmed: Chat, Search, Notes, Workspace (Models, Knowledge, Prompts, Skills, Tools). |
+| 2026-10-09 | `gyrogovernance/studio` created. Docs in `dev/`, prompts in `prompts/`, five Open WebUI shallow clones in `external/`. |
+| 2026-10-09 | Human Mark retains published AI Safety & Alignment identity. |
+| 2026-10-09 | Docs rewritten as formal specs (product, development, data, notes). |
 
-## Issues and solutions
+## Issues
 
 | Issue | Status | Action |
 | --- | --- | --- |
-| Product name | Open | Candidates: Collective Superintelligence Studio, Gyro Governance Studio, Studio. Governance Studio appears in search results for three enterprise products (Collate, EQTY Lab, Rigour); names starting with Open Meta-science read as Facebook's Meta. Check GitHub org and domain availability for the final candidate before the README ships. |
-| Open WebUI install location unknown on the build machine | Open | Find the install path, record the release number, and re-check the section list in [02_Development](02_Development.md) against that release. |
-| Pass 1 and pass 2 drafts return prose | Open | Convert to JSON in the `studio-thm-assessment-0.1` schema family before M1, per [02_Development](02_Development.md). |
-| Open WebUI license requires its marks to stay visible | Solved | Interface keeps Open WebUI branding; README carries upstream credits and the per-component license file. |
-| Assessment prompts carry AI Safety & Alignment wording in headers | Decided | Headers stay with the framework's own identity; the session supplies the material domain through the task fields. |
-| Pilot cold start | Open | Invite-only first five participants, public-source tasks, M5. |
-| Policy drafts are sensitive material | Open | Consent notice at first use, three destinations named before work starts, per [03_Data](03_Data.md). |
-| Token budget overrun | Open | Spending cap and review allowance set before invitations, per [03_Data](03_Data.md). |
-| AI Inspector relationship | Open | The extension stays as the clipboard companion for chats hosted elsewhere; the Studio is the home for in-house work. Decide whether the extension links to the Studio before M4. |
+| Product name | Open | Candidates: Collective Superintelligence Studio, Gyro Governance Studio, Studio. Collisions: Collate / EQTY / Rigour "Governance Studio"; "Meta" reads as Meta Platforms. Confirm GitHub handle and domain before README. |
+| Open WebUI install path | Open | Locate install; record release; verify feature list against [02_Development](02_Development.md). |
+| Pass 1–2 prose output | Open | Convert to `studio-thm-assessment-0.1` JSON before M1. |
+| Open WebUI mark retention | Solved | Branding kept; license file and README credits. |
+| Assessment prompt headers | Decided | Keep framework wording; domain comes from task fields. |
+| Pilot cold start | Open | Invite-only five; public sources; M5. |
+| Sensitive drafts | Open | Consent at first use; three destinations named ([03_Data](03_Data.md)). |
+| Token overrun | Open | Cap and allowance before invites ([03_Data](03_Data.md)). |
+| AI Inspector relationship | Open | Extension remains clipboard companion for external chats. Link decision before M4. |
 
 ## Ideas
 
-- **Grant targets for M6:** [Sentient Foundation open-source AGI grants](https://sentient.foundation/grants) (rolling, USD 42 million commitment, no equity), [Mozilla MOSS](https://grantedai.com/grants/mozilla-open-source-support-moss-program-foundational-technology-track-mozilla-foundation-e6353bf2) (USD 10,000 to USD 100,000), [NLnet programs](https://nlnet.nl/funding.html) (EUR 5,000 to 50,000, AI scope varies by program).
-- **Access policy:** free tier at launch on OpenRouter free endpoints; a larger allowance attaches to sessions that complete review, which keeps token spend proportional to record value.
-- **Review queue:** the artifact storage API holds assessment records with personal and shared scopes, which gives the review surface a backend inside the platform.
-- **Team review:** Channels carry shared sessions with multiple models; Automations schedule re-assessments on a fixed interval for documents under revision.
-- **Dataset packaging:** export from the session record into JSONL with consent fields intact; packaging script and data card live in the studio repo before the first sale conversation.
-- **Specialist workplace:** review tasks drawn from assessments awaiting expert sign-off, with rewards funded by dataset revenue, built after M5.
-- **Policy audience hook:** a session type for research-funding and metascience work, which matches the Brussels policy audience and the grant programs above.
+| Idea | Note |
+| --- | --- |
+| Grant targets (M6) | [Sentient](https://sentient.foundation/grants); [Mozilla MOSS](https://grantedai.com/grants/mozilla-open-source-support-moss-program-foundational-technology-track-mozilla-foundation-e6353bf2); [NLnet](https://nlnet.nl/funding.html) |
+| Access policy | Free tier on OpenRouter free endpoints; larger allowance for completed reviews |
+| Review queue | Artifact storage API (personal / shared scopes) as backend |
+| Team review | Channels for shared sessions; Automations for scheduled re-review |
+| Dataset packaging | Session → JSONL with consent; packaging script and data card in-repo before sale talks |
+| Specialist workplace | Paid review tasks after M5 |
+| Metascience session type | Research-funding / science-policy workflow for policy audience |
 
-## Files
+## Paths
 
-- `prompts/` at the repository root holds the working prompt drafts at v0.1: the governance research preset, the structured reviewer JSON, and the three pass prompts. The reviewer draft carries the reference schema.
-- The archived founding discussion stays at `f:\Development\basil\OSS\notes\1`.
+| Path | Contents |
+| --- | --- |
+| `prompts/` | v0.1 drafts (research preset, reviewer JSON schema, three pass prompts) |
+| `f:\Development\basil\OSS\notes\1` | Archived founding discussion |
