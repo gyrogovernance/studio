@@ -24,9 +24,11 @@ An operator attaches source material, works in chat or in a Note against a chose
 
 ## Audience
 
-**Primary users: governance practitioners.** Policy researchers, think tanks, and institutional staff who produce document-heavy work with AI assistance and need an inspectable trail of sources and decisions.
+**Primary users: governance practitioners.** Policy researchers, think tanks, and institutional staff who produce document-heavy work with AI assistance and need an inspectable trail of sources and decisions. The first audience pack targets European AI policy shops of the kind Arq Foundation describes: full-stack researchers, forward-deployed policy roles, and AI-native internal tooling ([arq.foundation](https://arq.foundation/); agenda in [Preparing Europe for Transformative AI](https://arq.foundation/research/preparing-europe-for-transformative-ai)).
 
 **Downstream buyers: AI safety researchers and open-weight producers.** They use reviewed session datasets for evaluation, training, and safeguards.
+
+Studio ships with preloadable **audience packs**: Knowledge Bases of public law and reports (for example the EU AI Act from EUR-Lex and the GPAI Code of Practice), Skills and Prompts for briefing and consultation work, and Model presets bound to those libraries. Pack contents are listed in [02_Development](02_Development.md).
 
 ## Market
 

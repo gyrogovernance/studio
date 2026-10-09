@@ -6,7 +6,7 @@ Internal plan, log, open issues, and ideas for Studio. Public product facts live
 
 | ID | Outcome |
 | --- | --- |
-| M1 | Workspace configured: Knowledge, Prompts, Skills, two Model presets; one end-to-end session on a Note |
+| M1 | Workspace + EU audience pack: Knowledge (AI Act, THM), Prompts, Skills, two Model presets; one end-to-end session on a Note |
 | M2 | Action button and JSON validation (Filter); findings rendered beside source passages |
 | M3 | Adjudication UI with persistence per finding |
 | M4 | Session export and consent preview; repository published (MIT, ports credited) |
@@ -23,6 +23,7 @@ Internal plan, log, open issues, and ideas for Studio. Public product facts live
 | 2026-10-09 | Created `gyrogovernance/studio`. Docs in `dev/`, prompts in `prompts/`, five Open WebUI shallow clones in `external/`. |
 | 2026-10-09 | Human Mark keeps its published AI Safety & Alignment identity. |
 | 2026-10-09 | Read Open WebUI docs (Notes, Models, Knowledge, Prompts, Skills, Actions, Filters, Pipes, Channels). Rewrote product pitch as prose; rewrote development plan around Notes as the living deliverable, Model presets as personas, Prompts as slash commands, Skills for multi-step review, Actions as the review button. |
+| 2026-10-09 | Mapped Arq Foundation agenda (five policy areas; full-stack / forward-deployed / AI-native ops; Builder in Residence) to an EU audience pack: EUR-Lex AI Act, GPAI Code, Draghi/Letta/Heitor stack, THM refs, consultation and metascience prompts. |
 
 ## Issues
 
@@ -51,6 +52,9 @@ Internal plan, log, open issues, and ideas for Studio. Public product facts live
 | Dataset packaging | Session to JSONL with consent fields; packaging script and data card in-repo before sale talks |
 | Specialist workplace | Paid review tasks after M5 |
 | Metascience session type | Research-funding / science-policy workflow for the policy audience |
+| EU audience pack (M1) | Preload AI Act + GPAI + competitiveness reports + THM; Skills for consultation, stakeholder memo, metascience experiment |
+| Later jurisdiction packs | NIST AI RMF; Council of Europe AI Convention; OECD AI Principles as toggleable Knowledge Bases |
+| Arq Builder pitch | Studio as the concrete deliverable for internal tooling / knowledge management / AI-native workflows |
 
 ## Paths
 
