@@ -21,6 +21,10 @@ Studio treats AI as part of the everyday method of research. Language models can
 
 Studio is developed by [Gyro Governance Lab](http://gyrogovernance.com/) as part of its work on AI safety and existential risk preparedness. It builds on [Open WebUI](https://github.com/open-webui/open-webui) and brings selected tools from the [AI Inspector Chrome extension](https://github.com/gyrogovernance/apps) into a dedicated application.
 
+<p align="center">
+  <img src="static/studio_chat.png" alt="AI Inspector Studio chat with Knowledge collections attached and an attributed brief on existential risk preparedness" width="900">
+</p>
+
 ## Who Studio is for
 
 Studio serves people who carry research from analysis through to policy design and stakeholder engagement.
@@ -39,6 +43,10 @@ Typical work includes the following.
 - Reviews of model evaluation documentation and system prompts
 
 ## What you can do
+
+<p align="center">
+  <img src="static/studio_features.png" alt="Studio workspace menu with Notes, Workspace, Automations, and related features" width="900">
+</p>
 
 ### Research with your sources in one place
 
@@ -81,6 +89,10 @@ Several workspace features help a team apply the same methods across many docume
 - **Skills** are longer sets of guidance that a model follows for multi-step research and review work.
 - **The glossary** explains workspace terms and the vocabulary of The Human Mark.
 
+<p align="center">
+  <img src="static/studio_agents_list.png" alt="Workspace Models list showing the four Studio presets for policy analysis, Human Mark review, claim and evidence review, and research synthesis" width="900">
+</p>
+
 All of these can be edited, so a team can adapt them to its own subject, house style, and methods.
 
 ## Getting started
@@ -91,6 +103,10 @@ Studio runs as a desktop application on **Windows (x64)** and on **Apple Silicon
 2. Install and open Studio. The first launch needs an internet connection and several gigabytes of free space while the application prepares itself, and later launches reuse that setup.
 3. Open **Profile → Settings → Connections** and add a hosted provider with your API key, or connect a local model through Ollama.
 4. Choose a model in chat, attach your documents or a Knowledge collection, and begin. The review tools appear in the chat tool selector and need a model that supports tool calling.
+
+<p align="center">
+  <img src="static/studio_api_setup.png" alt="Connections settings with OpenAI-compatible providers and a local Ollama endpoint" width="900">
+</p>
 
 Studio does not include API keys or model weights, so you choose and supply the model connection that suits your work.
 
