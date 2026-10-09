@@ -949,9 +949,10 @@ if LICENSE_PUBLIC_KEY:
 # Do not alter, remove, obscure, or replace it except as LICENSE permits:
 # https://docs.openwebui.com/license.
 WEBUI_NAME = os.getenv('WEBUI_NAME', 'Open WebUI')
-if WEBUI_NAME != 'Open WebUI' and os.getenv(
-	'SHOW_OPEN_WEBUI_BRANDING', 'False' if ENV == 'dev' else 'True'
-).lower() == 'true':
+if (
+    WEBUI_NAME != 'Open WebUI'
+    and os.getenv('SHOW_OPEN_WEBUI_BRANDING', 'False' if ENV == 'dev' else 'True').lower() == 'true'
+):
     WEBUI_NAME += ' (Open WebUI)'
 
 # LICENSE covers this Open WebUI branding surface, including this favicon

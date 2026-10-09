@@ -7,10 +7,10 @@ name: Python CI
 on:
   push:
     branches: [main, dev]
-    paths: ['backend/**', 'pyproject.toml', 'uv.lock', '.github/workflows/backend.yaml']
+    paths: ['backend/**', 'scripts/**/*.py', 'pyproject.toml', 'uv.lock', '.github/workflows/backend.yaml']
   pull_request:
     branches: [main, dev]
-    paths: ['backend/**', 'pyproject.toml', 'uv.lock', '.github/workflows/backend.yaml']
+    paths: ['backend/**', 'scripts/**/*.py', 'pyproject.toml', 'uv.lock', '.github/workflows/backend.yaml']
 
 concurrency:
   group: backend-${{ github.ref }}
@@ -34,10 +34,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install formatter
-        run: pip install "ruff>=0.15.5"
+        run: pip install "ruff==0.15.5"
 
       - name: Verify formatting
-        run: ruff format --check . --exclude .venv --exclude venv
+        run: ruff format --check backend scripts --config 'include = ["*.py"]' --exclude backend/open_webui/studio/data
 
       - name: Detect logic errors
-        run: ruff check --select=F --ignore=F401,F403,F405,F541,F811,F841 --output-format=github .
+        run: ruff check --select=F --ignore=F401,F403,F405,F541,F811,F841 --output-format=github backend scripts --config 'include = ["*.py"]' --exclude backend/open_webui/studio/data

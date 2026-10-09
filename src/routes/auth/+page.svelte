@@ -294,9 +294,7 @@
 
 									{#if $config?.onboarding ?? false}
 										<div class="mt-1 text-xs font-normal text-gray-600 dark:text-gray-500">
-											ⓘ {$i18n.t(
-												'This first account will administer this installation.'
-											)}
+											ⓘ {$i18n.t('This first account will administer this installation.')}
 										</div>
 									{/if}
 								</div>

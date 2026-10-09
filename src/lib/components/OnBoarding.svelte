@@ -83,8 +83,8 @@
 					</h1>
 
 					<p class="mt-6 max-w-xl text-sm leading-relaxed font-light text-white/60 lg:text-base">
-						A workspace for research, analysis, and document review. Bring your working documents and source
-						material together, then use AI to explore and develop your work.
+						A workspace for research, analysis, and document review. Bring your working documents
+						and source material together, then use AI to explore and develop your work.
 					</p>
 
 					<div class="mt-8 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-7">

@@ -890,7 +890,8 @@
 												<a
 													class="text-xs text-gray-500 hover:text-gray-900 dark:hover:text-gray-100"
 													href={`/workspace/models/edit?id=${encodeURIComponent(model.id)}`}
-												>{$i18n.t('Choose a model')}</a>
+													>{$i18n.t('Choose a model')}</a
+												>
 											{:else if model.write_access}
 												<button
 													class="flex h-6 items-center"

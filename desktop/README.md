@@ -63,9 +63,12 @@ are excluded from installers and the included source bundle.
 ## Distribution
 
 The `Desktop installers` GitHub Actions workflow builds Windows x64 and macOS
-Apple Silicon artifacts when manually dispatched. It uploads build
-artifacts without creating or publishing a release. The same commands work on
-a local Mac.
+Apple Silicon artifacts on pushes and pull requests to `main` that change
+application or build files. Documentation-only changes are skipped. Builds can
+also be started with Actions > Desktop installers > Run workflow. Download the
+installers from the completed run's Artifacts section. The workflow checks the
+bundled payload before uploading and does not create or publish a release.
+The same build commands work on a local Mac.
 
 Initial local builds are unsigned. For public distribution, configure the
 platform signing credentials supported by electron-builder. macOS notarization

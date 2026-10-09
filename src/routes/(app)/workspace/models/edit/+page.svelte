@@ -37,7 +37,11 @@
 	});
 
 	const onSubmit = async (modelInfo) => {
-		if (model?.meta?.studio?.requires_base_model && !model.base_model_id && modelInfo.base_model_id) {
+		if (
+			model?.meta?.studio?.requires_base_model &&
+			!model.base_model_id &&
+			modelInfo.base_model_id
+		) {
 			modelInfo.is_active = true;
 		}
 		const res = await updateModelById(localStorage.token, modelInfo.id, modelInfo);

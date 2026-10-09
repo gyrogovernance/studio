@@ -2,9 +2,19 @@ name: Desktop installers
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: ['dev/**', '**/*.md']
+  pull_request:
+    branches: [main]
+    paths-ignore: ['dev/**', '**/*.md']
 
 permissions:
   contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -33,6 +43,8 @@ jobs:
           version: '0.11.2'
       - run: npm ci
       - run: npm run desktop:build -- --${{ matrix.arch }}
+      - name: Check packaged contents
+        run: uv run --no-project --python 3.12 scripts/check-desktop-package.py
       - uses: actions/upload-artifact@v4
         with:
           name: ai-inspector-studio-${{ runner.os }}-${{ matrix.arch }}

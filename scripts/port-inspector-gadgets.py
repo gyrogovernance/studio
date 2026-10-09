@@ -27,21 +27,45 @@ def stage(name):
 
 
 gadgets = [
-    ('policy-audit', 'Policy Auditing', 'extract_claims_and_evidence',
-     'Extract exact claims, evidence and their relationships from supplied policy or document text.',
-     [constant('POLICY_AUDIT_TASK')]),
-    ('policy-report', 'Policy Reporting', 'write_attributed_report',
-     'Create an attributed executive report with recommendations, rationale and limitations.',
-     [constant('POLICY_REPORT_TASK')]),
-    ('meta-evaluation', 'Meta-Evaluation', 'review_governance_document',
-     'Run the three-pass Human Mark workflow on a supplied evaluation or governance document.',
-     [stage('generateMetaEvaluationPass1'), stage('generateMetaEvaluationPass2'), stage('generateMetaEvaluationPass3')]),
-    ('sanitize', 'Text Sanitization', 'clean_text',
-     'Propose Unicode, whitespace and formatting cleanup and explain the changes.',
-     [constant('SANITIZE_TASK')]),
-    ('immunity-boost', 'Quality Improvement', 'improve_content',
-     'Revise supplied content using the extension structure and behavior criteria, without diagnostic scoring.',
-     [constant('IMMUNITY_BOOST_TASK')]),
+    (
+        'policy-audit',
+        'Policy Auditing',
+        'extract_claims_and_evidence',
+        'Extract exact claims, evidence and their relationships from supplied policy or document text.',
+        [constant('POLICY_AUDIT_TASK')],
+    ),
+    (
+        'policy-report',
+        'Policy Reporting',
+        'write_attributed_report',
+        'Create an attributed executive report with recommendations, rationale and limitations.',
+        [constant('POLICY_REPORT_TASK')],
+    ),
+    (
+        'meta-evaluation',
+        'Meta-Evaluation',
+        'review_governance_document',
+        'Run the three-pass Human Mark workflow on a supplied evaluation or governance document.',
+        [
+            stage('generateMetaEvaluationPass1'),
+            stage('generateMetaEvaluationPass2'),
+            stage('generateMetaEvaluationPass3'),
+        ],
+    ),
+    (
+        'sanitize',
+        'Text Sanitization',
+        'clean_text',
+        'Propose Unicode, whitespace and formatting cleanup and explain the changes.',
+        [constant('SANITIZE_TASK')],
+    ),
+    (
+        'immunity-boost',
+        'Quality Improvement',
+        'improve_content',
+        'Revise supplied content using the extension structure and behavior criteria, without diagnostic scoring.',
+        [constant('IMMUNITY_BOOST_TASK')],
+    ),
 ]
 
 pack = {

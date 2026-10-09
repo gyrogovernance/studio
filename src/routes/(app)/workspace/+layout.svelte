@@ -2,14 +2,7 @@
 	import { onMount, getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 	import type { i18n as i18nType } from 'i18next';
-	import {
-		WEBUI_NAME,
-		config,
-		showSidebar,
-		user,
-		mobile,
-		workspaceActions
-	} from '$lib/stores';
+	import { WEBUI_NAME, config, showSidebar, user, mobile, workspaceActions } from '$lib/stores';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
@@ -176,8 +169,10 @@
 					<a
 						href="/workspace/glossary"
 						aria-current={activeWorkspaceSection === 'glossary' ? 'page' : null}
-						class="shrink-0 px-2 text-sm {activeWorkspaceSection === 'glossary' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}"
-					>Glossary</a>
+						class="shrink-0 px-2 text-sm {activeWorkspaceSection === 'glossary'
+							? 'text-gray-900 dark:text-gray-100'
+							: 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}">Glossary</a
+					>
 					<div class="ml-auto flex shrink-0 items-center gap-1">
 						<SplitCreateButton actions={visibleActions} />
 					</div>

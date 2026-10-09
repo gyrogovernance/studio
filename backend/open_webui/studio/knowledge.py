@@ -70,8 +70,12 @@ async def install_framework_defaults(request: Request):
                         metadata = {**source, 'studio_pack': 'frameworks-v1', 'knowledge_id': entry['knowledge_id']}
                         if record is None:
                             file = await upload_file_handler(
-                                request, upload, metadata=metadata, process=False,
-                                process_in_background=False, user=owner,
+                                request,
+                                upload,
+                                metadata=metadata,
+                                process=False,
+                                process_in_background=False,
+                                user=owner,
                             )
                             record = {'file_id': file.id, 'complete': False}
                             entry['files'][filename] = record
@@ -86,7 +90,9 @@ async def install_framework_defaults(request: Request):
                     if (processed.data or {}).get('status') != 'completed' or not any(
                         item.id == record['file_id'] for item in linked
                     ):
-                        raise RuntimeError(f'Framework indexing failed: {filename}: {(processed.data or {}).get("error")}')
+                        raise RuntimeError(
+                            f'Framework indexing failed: {filename}: {(processed.data or {}).get("error")}'
+                        )
                     record['complete'] = True
                     await Config.upsert({LEDGER_KEY: state})
                 entry['complete'] = True
@@ -111,7 +117,12 @@ async def install_framework_defaults(request: Request):
             if model_id in attached or not all(state.get(key, {}).get('complete') for key in source_ids):
                 continue
             model = await Models.get_model_by_id(model_id)
-            if model and model.user_id == owner.id and model.updated_at == model.created_at and not model.meta.knowledge:
+            if (
+                model
+                and model.user_id == owner.id
+                and model.updated_at == model.created_at
+                and not model.meta.knowledge
+            ):
                 references = []
                 for key in source_ids:
                     knowledge = await Knowledges.get_knowledge_by_id(state[key]['knowledge_id'])
@@ -130,7 +141,9 @@ def schedule_framework_defaults(app):
     task = getattr(app.state, 'studio_framework_task', None)
     if task is not None and not task.done():
         return task
-    request = Request({'type': 'http', 'app': app, 'headers': [], 'method': 'POST', 'path': '/internal/studio/frameworks'})
+    request = Request(
+        {'type': 'http', 'app': app, 'headers': [], 'method': 'POST', 'path': '/internal/studio/frameworks'}
+    )
     app.state.studio_framework_task = asyncio.create_task(install_framework_defaults(request))
     return app.state.studio_framework_task
 
