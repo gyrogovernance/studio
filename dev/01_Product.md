@@ -57,7 +57,7 @@ Per-component license file ships with the repository.
 
 | Phase | Model |
 | --- | --- |
-| 1 | Free app. Token budget from grants: [Sentient Foundation](https://sentient.foundation/grants) (rolling, USD 42M commitment, non-dilutive); [Mozilla MOSS](https://grantedai.com/grants/mozilla-open-source-support-moss-program-foundational-technology-track-mozilla-foundation-e6353bf2) (USD 10k–100k). Launch inference on OpenRouter free endpoints. |
+| 1 | Free app. Token budget from grants: [Sentient Foundation](https://sentient.foundation/grants) (rolling, USD 42M commitment, non-dilutive); [Mozilla MOSS](https://grantedai.com/grants/mozilla-open-source-support-moss-program-foundational-technology-track-mozilla-foundation-e6353bf2) (USD 10k-100k). Launch inference on OpenRouter free endpoints. |
 | 2 | Packaged datasets from contributed, consented session records. Sale requires separate permission and compensation per contributor. |
 | 3 | Paid specialist review workplace funded by dataset revenue. |
 

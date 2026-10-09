@@ -31,7 +31,7 @@ Internal plan, log, issues, and ideas. Public product facts: [01_Product](01_Pro
 | --- | --- | --- |
 | Product name | Open | Candidates: Collective Superintelligence Studio, Gyro Governance Studio, Studio. Collisions: Collate / EQTY / Rigour "Governance Studio"; "Meta" reads as Meta Platforms. Confirm GitHub handle and domain before README. |
 | Open WebUI install path | Open | Locate install; record release; verify feature list against [02_Development](02_Development.md). |
-| Pass 1–2 prose output | Open | Convert to `studio-thm-assessment-0.1` JSON before M1. |
+| Pass 1-2 prose output | Open | Convert to `studio-thm-assessment-0.1` JSON before M1. |
 | Open WebUI mark retention | Solved | Branding kept; license file and README credits. |
 | Assessment prompt headers | Decided | Keep framework wording; domain comes from task fields. |
 | Pilot cold start | Open | Invite-only five; public sources; M5. |
