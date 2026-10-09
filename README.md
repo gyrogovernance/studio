@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/favicon.svg" width="88" height="88" alt="AI Inspector Studio logo">
+  <img src="static/ai_inspector_promo_transp.png" alt="AI Inspector Studio logo">
 </p>
 
 <h1 align="center">AI Inspector Studio</h1>
