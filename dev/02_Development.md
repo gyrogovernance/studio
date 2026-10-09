@@ -34,8 +34,9 @@ Studio backend, frontend, and workspace defaults.
 Backend dependencies are exported from `uv.lock`. Updates are delivered through
 Studio installers; upstream PyPI auto-updates are not used. Application data lives
 outside the installer and survives application upgrades. Code signing and macOS
-notarization require platform credentials before public distribution. The manual
-desktop workflow builds installers and uploads artifacts without publishing a release.
+notarization require platform credentials before public distribution. The desktop
+workflow builds installers on application and build changes pushed to `main`, on
+pull requests, and on manual dispatch. It uploads artifacts without publishing a release.
 
 ## Local setup
 
