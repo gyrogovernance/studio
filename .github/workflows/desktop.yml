@@ -2,8 +2,18 @@ name: Desktop installers
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Attach the installers to a GitHub Release
+        type: boolean
+        default: true
+      tag:
+        description: Release tag (for example v0.1.0)
+        type: string
+        default: v0.1.0
   push:
     branches: [main]
+    tags: ['v*']
     paths-ignore: ['dev/**', '**/*.md']
   pull_request:
     branches: [main]
@@ -53,3 +63,50 @@ jobs:
             desktop/dist/*.dmg
             desktop/dist/*.zip
           if-no-files-found: error
+
+  publish:
+    name: Publish release
+    needs: build
+    if: >-
+      github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') ||
+      github.event_name == 'workflow_dispatch' && inputs.publish_release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          pattern: ai-inspector-studio-*
+          merge-multiple: true
+      - name: Resolve release tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.tag.outputs.name }}"
+          mapfile -t FILES < <(find release-assets -type f \( -name '*.exe' -o -name '*.dmg' -o -name '*.zip' \) | sort)
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "No installer files found under release-assets" >&2
+            exit 1
+          fi
+          printf 'Installer files:\n'
+          printf '  %s\n' "${FILES[@]}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${FILES[@]}" --clobber
+          else
+            gh release create "$TAG" "${FILES[@]}" \
+              --title "AI Inspector Studio ${TAG}" \
+              --notes "Alpha desktop installers for Windows (x64) and Apple Silicon (macOS 14+)." \
+              --latest
+          fi

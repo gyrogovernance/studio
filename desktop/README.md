@@ -62,20 +62,18 @@ are excluded from installers and the included source bundle.
 
 ## Distribution
 
-The `Desktop installers` GitHub Actions workflow builds Windows x64 and macOS
-Apple Silicon artifacts on pushes and pull requests to `main` that change
-application or build files. Documentation-only changes are skipped. Builds can
-also be started with Actions > Desktop installers > Run workflow. Download the
-installers from the completed run's Artifacts section. The workflow checks the
-bundled payload before uploading and does not create or publish a release.
-The same build commands work on a local Mac.
+The `Desktop installers` workflow builds Windows x64 and macOS Apple Silicon
+packages. On a version tag (`v*`), or when started manually with
+**Publish release** enabled, it creates or updates a GitHub Release and attaches
+the installers. Pull requests and ordinary pushes keep the packages as workflow
+artifacts for verification.
 
-Initial local builds are unsigned. For public distribution, configure the
-platform signing credentials supported by electron-builder. macOS notarization
-uses `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, and `APPLE_TEAM_ID` with a Developer
-ID certificate provided through `CSC_LINK` and `CSC_KEY_PASSWORD`. Windows signing
-can use `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD`. Credentials are build environment
-settings and are not stored in source or application resources.
+For public distribution, configure the platform signing credentials supported by
+electron-builder. macOS notarization uses `APPLE_ID`,
+`APPLE_APP_SPECIFIC_PASSWORD`, and `APPLE_TEAM_ID` with a Developer ID
+certificate provided through `CSC_LINK` and `CSC_KEY_PASSWORD`. Windows signing
+can use `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD`. Credentials are build
+environment settings and are not stored in source or application resources.
 
 Automatic updates are disabled until a Studio release feed is configured.
 Installing a newer Studio version preserves application data and updates the

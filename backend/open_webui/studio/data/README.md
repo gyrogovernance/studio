@@ -6,7 +6,7 @@ The native model presets start disabled with no inference model assigned. In Wor
 
 The pack installs for the first administrator on startup or first signup. Each successfully installed entry is recorded under `studio.workspace_pack.v1` in the configuration database. Startup preserves edits and deletions. Existing entries with matching identifiers are preserved. Additional defaults can be introduced with new identifiers. Set `STUDIO_WORKSPACE_DEFAULTS=false` to disable automatic installation.
 
-These are instructions and templates. The accompanying `frameworks-v1.json` manifest and `frameworks/` directory bundle five Knowledge collections with eight complete source documents. The background importer uses native content extraction, embeddings, vector storage, and Knowledge file linking. The MVP uses native chats, Notes, search, references, and exports for persistence and continuity. The gadget result format and source provenance are documented in [Data](../../../../dev/03_Data.md).
+These are instructions and templates. The accompanying `frameworks-v1.json` manifest and `frameworks/` directory bundle five Knowledge collections with eight complete source documents. The background importer uses native content extraction, embeddings, vector storage, and Knowledge file linking. The Alpha Release uses native chats, Notes, search, conversation references, and exports to retain and revisit work. Tool definitions and prompt provenance are recorded in [the gadget manifest](gadgets-v1.json); the execution result structure is defined in [the tool runner](../gadgets.py).
 
 ## Framework libraries
 
@@ -28,6 +28,6 @@ NIST sources retain the [NIST Technical Series reuse terms](https://www.nist.gov
 
 ## Attribution
 
-Studio-authored instructions use the Studio MIT license. Human Mark instructions in the workspace pack adapt the drafts in the repository's `prompts/` directory. The separate gadget pack extracts its task text from `gyrogovernance/apps`, `src/lib/prompts.ts`, and includes the source MIT notice in `gadgets/LICENSE`. Framework documents are reproduced from `gyrogovernance/tools`, `docs/the_human_mark`, copied on 2026-10-09.
+Studio-authored instructions use the Studio MIT license. Instructions for review using The Human Mark are included in `workspace-v1.json`, with the reference material in `frameworks/`. The separate gadget pack extracts its task text from `gyrogovernance/apps`, `src/lib/prompts.ts`, and includes the source MIT notice in `gadgets/LICENSE`. Framework documents are reproduced from `gyrogovernance/tools`, `docs/the_human_mark`, copied on 2026-10-09.
 
 The Human Mark framework and Grammar are by Basil Korompilias / Gyro Governance, licensed under [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The embedded Human Mark text and adaptations retain those terms. Source: [The Human Mark documentation](https://github.com/gyrogovernance/tools/tree/main/docs/the_human_mark). A copy of the source license is included in `THM-LICENSE.txt` beside the pack.
