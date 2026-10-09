@@ -1,6 +1,6 @@
 # Notes
 
-Internal plan, log, open issues, and ideas for Studio. Public product facts live in [01_Product](01_Product.md). Code and Open WebUI integration live in [02_Development](02_Development.md). Schemas and pilot measures live in [03_Data](03_Data.md).
+Internal plan, log, open issues, and ideas for Studio. Public product facts live in [01_Product](01_Product.md). Code and Open WebUI integration live in [02_Development](02_Development.md). Schemas and pilot measures live in [03_Data](03_Data.md). How to run and what to tell another assistant: [05_Start](05_Start.md).
 
 ## Plan
 
@@ -24,6 +24,7 @@ Internal plan, log, open issues, and ideas for Studio. Public product facts live
 | 2026-10-09 | Human Mark keeps its published AI Safety & Alignment identity. |
 | 2026-10-09 | Read Open WebUI docs (Notes, Models, Knowledge, Prompts, Skills, Actions, Filters, Pipes, Channels). Rewrote product pitch as prose; rewrote development plan around Notes as the living deliverable, Model presets as personas, Prompts as slash commands, Skills for multi-step review, Actions as the review button. |
 | 2026-10-09 | Mapped Arq Foundation agenda (five policy areas; full-stack / forward-deployed / AI-native ops; Builder in Residence) to an EU audience pack: EUR-Lex AI Act, GPAI Code, Draghi/Letta/Heitor stack, THM refs, consultation and metascience prompts. |
+| 2026-10-09 | Added 05_Start.md: SvelteKit+FastAPI stack, Vite live reload, do not fork desktop first, hide features via RBAC, pasteable assistant brief. |
 
 ## Issues
 
