@@ -1,0 +1,10 @@
+# Read-only reference checkouts of upstream repositories
+external/
+
+# Local runtime and build artifacts
+__pycache__/
+*.pyc
+node_modules/
+*.log
+Thumbs.db
+.DS_Store
