@@ -319,9 +319,6 @@ dev/external/
 
 dev/
 
-# Unrelated local website working draft
-/lab.md
-
 # Generated desktop payloads and installers
 /desktop/node_modules/
 /desktop/dist/

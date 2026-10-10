@@ -50,8 +50,21 @@ const config = {
 		// }
 	},
 	onwarn: (warning, handler) => {
-		const { code } = warning;
-		if (code === 'css-unused-selector') return;
+		// Open WebUI's Svelte tree emits a large volume of known compiler warnings.
+		// Keep the terminal readable in Studio development; real compile failures still surface.
+		const ignored = new Set([
+			'a11y_click_events_have_key_events',
+			'a11y_consider_explicit_label',
+			'a11y_invalid_attribute',
+			'a11y_no_static_element_interactions',
+			'a11y_role_has_required_aria_props',
+			'css-unused-selector',
+			'css_unused_selector',
+			'element_invalid_self_closing_tag',
+			'export_let_unused',
+			'reactive_declaration_module_script_dependency'
+		]);
+		if (ignored.has(warning.code) || warning.code?.startsWith('a11y_')) return;
 
 		handler(warning);
 	}

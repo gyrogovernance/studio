@@ -25,22 +25,22 @@ Studio is developed by [Gyro Governance Lab](http://gyrogovernance.com/) as part
   <img src="static/studio_chat.png" alt="AI Inspector Studio chat with Knowledge collections attached and an attributed brief on existential risk preparedness" width="900">
 </p>
 
-## Who Studio is for
+## Designed for Good Governance
 
 Studio serves people who carry research from analysis through to policy design and stakeholder engagement.
 
-- Researchers who own a policy area end to end, from evidence review to the published brief and its dissemination.
-- Policy advisers working with governments, public institutions, and international bodies on frontier AI, safety, and governance.
-- Think tanks and independent foundations building AI-native practices for research and knowledge management.
-- Technical and governance teams reviewing evaluation reports, risk assessments, and internal guidance.
+- **Researchers** who own a policy area end to end, from evidence review to the published brief and its dissemination.
+- **Policy advisers** working with governments, public institutions, and international bodies on frontier AI, safety, and governance.
+- **Think tanks** and independent foundations building AI-native practices for research and knowledge management.
+- **Technical and governance teams** reviewing evaluation reports, risk assessments, and internal guidance.
 
 Typical work includes the following.
 
-- Briefings on AI safety, governance, and existential risk preparedness
-- Consultation responses and comments on draft regulation and standards
-- Comparisons between a proposal and established frameworks such as the EU AI Act or the NIST AI Risk Management Framework
-- Research on competitiveness, industrial policy, metascience, and societal resilience as AI capabilities grow
-- Reviews of model evaluation documentation and system prompts
+- **Briefings** on AI safety, governance, and existential risk preparedness
+- **Consultation** responses and comments on draft regulation and standards
+- **Comparisons** between a proposal and established frameworks such as the EU AI Act or the NIST AI Risk Management Framework
+- **Research** on competitiveness, industrial policy, metascience, and societal resilience as AI capabilities grow
+- **Reviews** of model evaluation documentation and system prompts
 
 ## What you can do
 
@@ -50,9 +50,9 @@ Typical work includes the following.
 
 ### Research with your sources in one place
 
-- **Knowledge** holds reports, papers, legislation, and standards in searchable collections that a model can draw on during a conversation.
-- **Notes** give you an editable document for the brief, memo, or response you are developing.
-- **Chat history and search** let you return to an earlier exchange and see how a conclusion was formed.
+- **📔 Knowledge** holds reports, papers, legislation, and standards in searchable collections that a model can draw on during a conversation.
+- **📝 Notes** give you an editable document for the brief, memo, or response you are developing.
+- **🔍 Chat history and search** let you return to an earlier exchange and see how a conclusion was formed.
 
 A typical session might begin with several reports on the same policy question. You ask for a synthesis that separates where the sources agree from where they diverge, question the points that seem weakly supported, and develop the result into a briefing note while the sources and the discussion remain open beside it.
 
@@ -94,6 +94,25 @@ Several workspace features help a team apply the same methods across many docume
 </p>
 
 All of these can be edited, so a team can adapt them to its own subject, house style, and methods.
+
+### Also in the workspace
+
+Studio keeps the wider Open WebUI workspace, so day-to-day research tools sit beside the governance-focused features above.
+
+- **Automations** run a saved prompt on a schedule and open the chat that each run produced.
+- **Calendar** holds personal and shared events; models can help schedule and update them when tool calling is available.
+- **Playground** is a separate place to try prompts and model settings without mixing that work into an active research thread.
+- **Image generation and editing** work with providers you configure, including local options where you have them set up.
+- **Multi-model chat** lets you put several models on the same question and compare their answers side by side.
+- **Web search and page fetch** pull live sources into a conversation when you enable a search provider, or when you attach a URL with `#`.
+- **Channels** are shared timelines where people and models can work on the same thread.
+- **Memory** can keep selected facts across chats when you turn that on.
+- **Voice and video call** modes are available when speech providers are configured.
+- **Markdown and LaTeX** render properly in chat and notes.
+
+Connections stay provider-agnostic: Ollama locally, or any OpenAI-compatible API (including common hosted routers). Document libraries use retrieval over your Knowledge collections; extraction and embedding backends are chosen in settings. For team hosting you can add groups, permissions, and sign-in; the desktop Alpha opens locally without an account. Plugin surfaces from Open WebUI (tools, filters, actions, pipes, skills, and OpenAPI or MCP-style tool servers) remain available when you need custom integrations.
+
+Full upstream feature documentation lives in the [Open WebUI docs](https://docs.openwebui.com/features/). Studio does not ship the separate Open WebUI companion products (Computer, Terminals, oikb), and enterprise deployment options such as LDAP, SCIM, or multi-node hosting are outside the Alpha desktop path.
 
 ## Getting started
 
@@ -146,7 +165,20 @@ This is an early release for use and feedback. Model behaviour and tool support 
 
 When you report an issue, please describe the task, what you expected, and what happened, along with the application version, operating system, and model. Remove API keys and private document content before sharing.
 
+---
+
 ## Acknowledgements and licenses
+
+
+<p align="center">
+  <a href="https://github.com/open-webui/open-webui">
+    <img src="static/banner.png" alt="Open WebUI" width="720">
+  </a>
+</p>
+
+<p align="center">
+  Built on <a href="https://github.com/open-webui/open-webui">Open WebUI</a>
+</p>
 
 Studio is based on Open WebUI v0.11.4, created by Timothy Jaeryang Baek and maintained by Open WebUI Inc. Each component keeps its own license.
 
@@ -158,3 +190,5 @@ Studio is based on Open WebUI v0.11.4, created by Timothy Jaeryang Baek and main
 - Publisher, edition, source, and reuse details for the other framework documents are recorded in the [framework manifest](backend/open_webui/studio/data/frameworks-v1.json).
 
 Including these references does not imply endorsement by their publishers.
+
+---

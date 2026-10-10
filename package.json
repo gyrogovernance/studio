@@ -5,8 +5,8 @@
 	"scripts": {
 		"dev": "npm run pyodide:fetch && vite dev --host 127.0.0.1",
 		"dev:backend": "powershell -ExecutionPolicy Bypass -File scripts/dev-backend.ps1",
-		"start:dev": "powershell -ExecutionPolicy Bypass -File scripts/start.ps1 dev",
-		"start:prod": "powershell -ExecutionPolicy Bypass -File scripts/start.ps1 prod",
+		"start:dev": "node scripts/dev-launcher.mjs dev",
+		"start:prod": "node scripts/dev-launcher.mjs prod",
 		"desktop:dev": "node scripts/desktop.mjs dev",
 		"desktop:build": "node scripts/desktop.mjs build",
 		"desktop:win": "node scripts/desktop.mjs build --win",
@@ -27,7 +27,8 @@
 		"i18n:parse": "i18next --config i18next-parser.config.ts && prettier --write \"src/lib/i18n/**/*.{js,json}\"",
 		"cy:open": "cypress open",
 		"test:frontend": "vitest --passWithNoTests",
-		"pyodide:fetch": "node scripts/prepare-pyodide.js"
+		"pyodide:fetch": "node scripts/prepare-pyodide.js",
+		"pyodide:refresh": "node scripts/prepare-pyodide.js --force"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "3.2.2",

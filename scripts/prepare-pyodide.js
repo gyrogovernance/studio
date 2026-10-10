@@ -39,7 +39,12 @@ const pypiDepends = {
 
 import { loadPyodide } from 'pyodide';
 import { setGlobalDispatcher, ProxyAgent } from 'undici';
-import { writeFile, readFile, copyFile, readdir, rmdir, access, mkdir, rm } from 'fs/promises';
+import { writeFile, readFile, copyFile, readdir, access, mkdir, rm } from 'fs/promises';
+
+const forceRefresh =
+	process.argv.includes('--force') ||
+	process.env.PYODIDE_FORCE === '1' ||
+	process.env.PYODIDE_FORCE === 'true';
 
 /**
  * Loading network proxy configurations from the environment variables.
@@ -71,6 +76,46 @@ function initNetworkProxyFromEnv() {
 	console.log(`Initialized network proxy "${preferedProxy}" from env`);
 }
 
+function normalizePackageKey(pkg) {
+	return pkg.toLowerCase().replace(/[-_.]+/g, '-');
+}
+
+async function getMissingBundledPackages() {
+	const lockPath = 'static/pyodide/pyodide-lock.json';
+	const lockData = JSON.parse(await readFile(lockPath, 'utf-8'));
+	const missing = [];
+
+	for (const pkg of new Set([...packages, ...pypiPackages, ...Object.values(pypiDepends).flat()])) {
+		const entry = lockData.packages[normalizePackageKey(pkg)];
+		if (!entry) {
+			missing.push(pkg);
+			continue;
+		}
+		try {
+			await access(`static/pyodide/${entry.file_name}`);
+		} catch {
+			missing.push(pkg);
+		}
+	}
+
+	return missing;
+}
+
+async function pyodideCacheIsReady() {
+	try {
+		const packageJson = JSON.parse(await readFile('package.json', 'utf-8'));
+		const expectedVersion = packageJson.dependencies.pyodide.replace('^', '');
+		const cached = JSON.parse(await readFile('static/pyodide/package.json', 'utf-8'));
+		if (cached.version.replace('^', '') !== expectedVersion) {
+			return false;
+		}
+		const missing = await getMissingBundledPackages();
+		return missing.length === 0;
+	} catch {
+		return false;
+	}
+}
+
 async function downloadPackages() {
 	console.log('Setting up pyodide + micropip');
 
@@ -93,10 +138,10 @@ async function downloadPackages() {
 
 		if (pyodideVersion !== pyodidePackageVersion) {
 			console.log('Pyodide version mismatch, removing static/pyodide directory');
-			await rmdir('static/pyodide', { recursive: true });
+			await rm('static/pyodide', { recursive: true, force: true });
 		}
-	} catch (err) {
-		console.log('Pyodide package not found, proceeding with download.', err);
+	} catch {
+		console.log('Pyodide package not found, proceeding with download.');
 	}
 
 	try {
@@ -209,23 +254,7 @@ async function downloadPyPIWheels() {
 
 // A package with no bundled wheel is installed from PyPI in the user's browser instead.
 async function verifyBundledWheels() {
-	const lockPath = 'static/pyodide/pyodide-lock.json';
-	const lockData = JSON.parse(await readFile(lockPath, 'utf-8'));
-	const missing = [];
-
-	for (const pkg of new Set([...packages, ...pypiPackages, ...Object.values(pypiDepends).flat()])) {
-		const entry = lockData.packages[pkg.toLowerCase().replace(/[-_.]+/g, '-')];
-		if (!entry) {
-			missing.push(pkg);
-			continue;
-		}
-		try {
-			await access(`static/pyodide/${entry.file_name}`);
-		} catch {
-			missing.push(pkg);
-		}
-	}
-
+	const missing = await getMissingBundledPackages();
 	if (missing.length) {
 		throw new Error(`No wheel bundled for: ${missing.join(', ')}`);
 	}
@@ -249,7 +278,12 @@ if (process.env.USE_SLIM === 'true') {
 		).href;
 	}
 	await writeFile(lockPath, JSON.stringify(lockData, null, 2));
+} else if (!forceRefresh && (await pyodideCacheIsReady())) {
+	console.log('Pyodide cache is ready; skipping package fetch.');
 } else {
+	if (forceRefresh) {
+		console.log('Forcing Pyodide package refresh.');
+	}
 	await downloadPackages();
 	await copyPyodide();
 	await downloadPyPIWheels();
