@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/ai_inspector_promo_transp.png" alt="AI Inspector Studio logo">
+  <img src="static/ai_inspector_studio_cover_transp.png" alt="AI Inspector Studio logo">
 </p>
 
 <h1 align="center">AI Inspector Studio</h1>
